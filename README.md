@@ -1,1 +1,2 @@
 itulah hidup
+menurutku begitu

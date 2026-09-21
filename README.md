@@ -1,1 +1,1 @@
-itulah hidup.
+itulah hidup

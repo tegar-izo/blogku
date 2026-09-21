@@ -1,2 +1,1 @@
 itulah hidup
-apanya hidup

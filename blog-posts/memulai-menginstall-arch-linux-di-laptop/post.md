@@ -3,6 +3,7 @@ title: "memulai menginstall arch linux di laptop"
 date: "2026-10-03"
 excerpt: "ternyata menginstall archlinux tidak se-sulit dulu lagi, saat kita harus menginstall package satu persatu"
 tags: "linux, archlinux, arch, tech, operating system, sistem operasi"
+draft: true
 ---
 # memulai menginstall arch linux di laptop
 

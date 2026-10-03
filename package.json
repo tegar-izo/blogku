@@ -1,0 +1,27 @@
+{
+  "name": "vue-md-blog",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Web app blog berbasis file .md lengkap dengan dashboard, dibuat dengan Vue.",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:server": "node server/index.js",
+    "dev:client": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node test/posts-github.test.mjs",
+    "start": "node server/index.js"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.16",
+    "express": "^5.2.1",
+    "marked": "^18.0.14",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.9",
+    "vite": "^8.3.2"
+  }
+}

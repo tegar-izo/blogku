@@ -26,6 +26,7 @@ const form = reactive({
 
 const isEdit = computed(() => route.name === 'post-edit')
 const slugValid = computed(() => !form.slug || SLUG_RE.test(form.slug))
+const paneMode = ref('edit') // 'edit' | 'preview'
 const previewHtml = computed(() => renderMarkdown(form.body))
 const wordCount = computed(() => {
   const text = form.body.trim()
@@ -229,7 +230,26 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
       </div>
 
       <div class="editor__panes">
-        <div class="pane">
+        <div class="editor__tabs">
+          <button
+            type="button"
+            class="tab"
+            :class="{ 'tab--active': paneMode === 'edit' }"
+            @click="paneMode = 'edit'"
+          >
+            Tulis
+          </button>
+          <button
+            type="button"
+            class="tab"
+            :class="{ 'tab--active': paneMode === 'preview' }"
+            @click="paneMode = 'preview'"
+          >
+            Pratinjau
+          </button>
+        </div>
+
+        <div v-show="paneMode === 'edit'" class="pane">
           <div class="pane__head">
             <span>Markdown</span>
             <span class="muted">{{ wordCount }} kata</span>
@@ -242,7 +262,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
           ></textarea>
         </div>
 
-        <div class="pane">
+        <div v-show="paneMode === 'preview'" class="pane">
           <div class="pane__head">
             <span>Pratinjau</span>
           </div>

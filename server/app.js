@@ -20,6 +20,16 @@ const app = express()
 app.disable('x-powered-by')
 app.use(express.json({ limit: '2mb' }))
 
+// Vercel meneruskan path API tanpa awalan /api (/posts bukan /api/posts).
+// Samakan dulu SEBELUM yang lain supaya rute cukup ditulis sekali.
+const API_PATH_RE = /^\/(health|login|logout|me|posts)(\/|\?|$)/
+app.use((req, _res, next) => {
+  if (!req.path.startsWith('/api') && API_PATH_RE.test(req.path)) {
+    req.url = `/api${req.url}`
+  }
+  next()
+})
+
 // --- sajikan hasil build (hanya untuk pemakaian lokal) ---
 const distDir = path.resolve(here, '..', 'dist')
 const indexHtml = path.join(distDir, 'index.html')
@@ -35,16 +45,6 @@ if (hasDist) {
 if (!quiet) {
   console.log(hasDist ? `Menyajikan build statis dari ${distDir}` : 'Folder dist/ belum ada — jalankan `npm run build` untuk mode produksi.')
 }
-
-// Vercel terkadang meneruskan path tanpa awalan /api (/posts bukan /api/posts).
-// Samakan dulu supaya rute cukup ditulis sekali.
-const API_PATH_RE = /^\/(health|login|logout|me|posts)(\/|\?|$)/
-app.use((req, _res, next) => {
-  if (!req.path.startsWith('/api') && API_PATH_RE.test(req.path)) {
-    req.url = `/api${req.url}`
-  }
-  next()
-})
 
 // --- rute API ---
 // Semua request /api harus sudah punya info sesi sebelum diproses.

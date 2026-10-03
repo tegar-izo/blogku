@@ -61,9 +61,5 @@ async function submit() {
         {{ loading ? 'Memeriksa…' : 'Masuk' }}
       </button>
     </form>
-
-    <p class="muted">
-      Belum punya password? Atur variabel <code>DASHBOARD_PASSWORD</code> di file <code>.env</code>.
-    </p>
   </div>
 </template>

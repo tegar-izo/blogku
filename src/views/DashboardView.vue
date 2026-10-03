@@ -30,7 +30,7 @@ async function load() {
 
 async function remove(post) {
   const ok = window.confirm(
-    `Hapus post "${post.title}"?\n\nFile blog-posts/${post.slug}/post.md akan ikut terhapus.`,
+    `Hapus post "${post.title}"?`,
   )
   if (!ok) return
   try {

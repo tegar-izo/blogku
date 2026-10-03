@@ -25,10 +25,7 @@ onMounted(() => {
 
     <div v-else class="empty-state">
       <h2>Belum ada post</h2>
-      <p class="muted">
-        Tulis post pertama lewat dashboard, atau tambahkan file .md baru di folder
-        <code>blog-posts/</code>.
-      </p>
+      <p class="muted">Tulis post pertama lewat dashboard.</p>
       <router-link class="btn btn--primary" :to="{ name: 'dashboard' }">Buka dashboard</router-link>
     </div>
   </div>

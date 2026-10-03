@@ -1,14 +1,15 @@
 <script setup>
-import { onMounted } from 'vue'
 import { listPublished } from '../content.js'
 import PostCard from '../components/PostCard.vue'
 import { SITE_TITLE, SITE_DESCRIPTION } from '../config.js'
+import { useHead } from '@unhead/vue'
 
 // Post terbit sudah ikut dibundel saat build — tanpa panggilan API.
 const posts = listPublished()
 
-onMounted(() => {
-  document.title = SITE_TITLE
+useHead({
+  title: SITE_TITLE,
+  meta: [{ name: 'description', content: SITE_DESCRIPTION }],
 })
 </script>
 

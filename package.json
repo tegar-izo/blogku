@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "dev:server": "node server/index.js",
-    "dev:client": "vite",
-    "build": "vite build",
+    "dev:client": "vite-ssg dev",
+    "build": "vite-ssg build && node scripts/sitemap.mjs",
     "preview": "vite preview",
     "test": "node test/posts-github.test.mjs",
     "start": "node server/index.js"
@@ -21,7 +21,9 @@
     "vue-router": "^5.3.1"
   },
   "devDependencies": {
+    "@unhead/vue": "^2.1.17",
     "@vitejs/plugin-vue": "^6.0.9",
-    "vite": "^8.3.2"
+    "vite": "^8.3.2",
+    "vite-ssg": "^28.3.0"
   }
 }

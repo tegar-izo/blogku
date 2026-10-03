@@ -3,6 +3,9 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { login, useAuth } from '../composables/useAuth.js'
 import { SITE_TITLE } from '../config.js'
+import { useHead } from '@unhead/vue'
+
+useHead({ title: `Masuk · ${SITE_TITLE}` })
 
 const route = useRoute()
 const router = useRouter()
@@ -18,7 +21,6 @@ function goNext() {
 }
 
 onMounted(() => {
-  document.title = `Masuk · ${SITE_TITLE}`
   if (auth.authenticated) goNext()
 })
 

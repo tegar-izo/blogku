@@ -36,7 +36,17 @@ const indexHtml = path.join(distDir, 'index.html')
 const hasDist = fs.existsSync(indexHtml)
 if (hasDist) {
   app.use(express.static(distDir))
-  // SPA fallback: semua GET non-API jatuh ke index.html.
+  // Halaman hasil pra-render disimpan sebagai <path>.html — samakan URL bersihnya.
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api')) return next()
+    const candidate = path.normalize(path.join(distDir, `${req.path.replace(/\/$/, '')}.html`))
+    if (candidate.startsWith(distDir) && fs.existsSync(candidate)) {
+      res.sendFile(candidate)
+      return
+    }
+    next()
+  })
+  // SPA fallback: route yang tidak dipra-render (mis. /dashboard) jatuh ke index.html.
   app.use((req, res, next) => {
     if (req.method !== 'GET' || req.path.startsWith('/api')) return next()
     res.sendFile(indexHtml)

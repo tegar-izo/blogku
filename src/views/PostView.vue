@@ -1,47 +1,86 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { fetchPost } from '../content.js'
+import { fetchPost, getPublished } from '../content.js'
 import { renderMarkdown } from '../markdown.js'
 import { formatDate } from '../utils.js'
-import { SITE_TITLE } from '../config.js'
+import { SITE_TITLE, SITE_DESCRIPTION } from '../config.js'
+import { useHead } from '@unhead/vue'
 
 const route = useRoute()
 const post = ref(null)
-const html = ref('')
 const status = ref('loading') // loading | ok | not-found | error
 const message = ref('')
 
+function stripHeading(body) {
+  // Judul sudah dirender terpisah, jadi baris "# Judul" di isi tidak diulang.
+  const heading = /^\s*#\s+[^\n]*\n?/.exec(body)
+  return heading ? body.slice(heading[0].length) : body
+}
+
+const html = computed(() => (post.value ? renderMarkdown(stripHeading(post.value.body)) : ''))
+
+useHead(
+  computed(() => ({
+    title: post.value ? `${post.value.title} · ${SITE_TITLE}` : `Tidak ditemukan · ${SITE_TITLE}`,
+    meta: [
+      {
+        name: 'description',
+        content: post.value?.excerpt || SITE_DESCRIPTION,
+      },
+    ],
+    script: post.value
+      ? [
+          {
+            type: 'application/ld+json',
+            innerHTML: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BlogPosting',
+              headline: post.value.title,
+              datePublished: post.value.date,
+              description: post.value.excerpt,
+              keywords: (post.value.tags || []).join(', '),
+            }),
+          },
+        ]
+      : [],
+  })),
+)
+
 async function load() {
-  status.value = 'loading'
-  post.value = null
-  html.value = ''
+  // Jangan kosongkan tampilan yang sudah terisi (menghindari kedip saat hidrasi).
+  if (!post.value || post.value.slug !== route.params.slug) {
+    status.value = 'loading'
+    post.value = null
+  }
   message.value = ''
 
   try {
     const data = await fetchPost(route.params.slug)
     if (!data) {
       status.value = 'not-found'
-      document.title = `Tidak ditemukan · ${SITE_TITLE}`
+      post.value = null
       return
     }
 
     post.value = data
-
-    // Judul sudah dirender terpisah, jadi baris "# Judul" di isi tidak diulang.
-    const heading = /^\s*#\s+[^\n]*\n?/.exec(data.body)
-    const content = heading ? data.body.slice(heading[0].length) : data.body
-    html.value = renderMarkdown(content)
     status.value = 'ok'
-    document.title = `${data.title} · ${SITE_TITLE}`
   } catch (err) {
     status.value = err.status === 404 ? 'not-found' : 'error'
     message.value = err.message
-    document.title = `Tidak ditemukan · ${SITE_TITLE}`
   }
 }
 
-watch(() => route.params.slug, load, { immediate: true })
+// Isi awal langsung dari bundel supaya HTML pra-render mengandung konten utuh.
+const bundled = getPublished(route.params.slug)
+if (bundled) {
+  post.value = bundled
+  status.value = 'ok'
+}
+
+// Setelah hydrasi, muat ulang (memungkinkan versi terbaru untuk yang login).
+onMounted(load)
+watch(() => route.params.slug, load)
 </script>
 
 <template>

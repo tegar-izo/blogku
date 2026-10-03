@@ -44,4 +44,4 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
 
 console.log('Menjalankan server API (http://localhost:3001) dan Vite (http://localhost:5173)...\n')
 run('server', process.execPath, ['server/index.js'])
-run('client', 'vite', [])
+run('client', 'vite-ssg', ['dev'])
